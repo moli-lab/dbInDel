@@ -1,0 +1,28 @@
+Cancer type	Insersion	Deletion
+Prostate Cancer	3477	4318
+Ewing Sarcoma	4866	1116
+Lymphoma	3942	545
+Colorectal Cancer	3368	1105
+Cholangio Cancer	3793	358
+Breast Cancer	3506	417
+Other	3253	604
+Bladder Cancer	2963	770
+Myeloma	3000	564
+Pancreatic Cancer	2968	446
+Lung Cancer	3006	345
+Adenoid Cystic Carcinoma	2820	450
+Non-malignant	2040	385
+Cervical Cancer	2037	270
+Embryonal Cancer	2018	211
+Neuroblastoma	1923	258
+Medulloblastoma	2067	9
+Leukemia	1614	320
+Meningioma	979	897
+Liver Cancer	1732	133
+Melanoma	1743	41
+Rhabdomyosarcoma	786	761
+Endometrioid Cancer	587	545
+Brain Cancer	905	139
+Kidney Cancer	699	92
+Skin Cancer	10	20
+Osteosarcoma	29	0

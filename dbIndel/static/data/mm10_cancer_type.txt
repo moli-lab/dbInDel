@@ -1,0 +1,8 @@
+Brain Cancer	1
+Embryonal Cancer	2
+Leukemia	4
+Liver Cancer	2
+Lung Cancer	2
+Lymphoma	5
+Medulloblastoma	4
+Skin Cancer	1

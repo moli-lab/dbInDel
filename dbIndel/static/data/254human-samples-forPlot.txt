@@ -1,0 +1,4 @@
+Cell Line	155
+Tissue	56
+Primary Cell	36
+Non-malignant	7

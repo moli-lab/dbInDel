@@ -1,0 +1,26 @@
+Adenoid Cystic Cancer	1
+Bladder Cancer	3
+Brain Cancer	21
+Breast Cancer	9
+Cervical Cancer	2
+Cholangio Cancer	1
+Colorectal Cancer	38
+Embryonal Cancer	2
+Endometrioid Cancer	17
+Ewing Sarcoma	3
+Kidney Cancer	5
+Leukemia	25
+Liver Cancer	5
+Lung Cancer	9
+Lymphoma	36
+Medulloblastoma	19
+Melanoma	11
+Meningioma	14
+Myeloma	3
+Neuroblastoma	9
+Osteosarcoma	1
+Other	2
+Pancreatic Cancer	12
+Prostate Cancer	6
+Rhabdomyosarcoma	8
+Skin Cancer	1
