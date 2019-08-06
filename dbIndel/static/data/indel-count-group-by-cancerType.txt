@@ -1,28 +1,28 @@
-Cancer type	Insersion	Deletion
-Prostate Cancer	3477	4318
-Ewing Sarcoma	4866	1116
-Lymphoma	3942	545
-Colorectal Cancer	3368	1105
-Cholangio Cancer	3793	358
-Breast Cancer	3506	417
-Other	3253	604
-Bladder Cancer	2963	770
-Myeloma	3000	564
-Pancreatic Cancer	2968	446
-Lung Cancer	3006	345
-Adenoid Cystic Carcinoma	2820	450
-Non-malignant	2040	385
-Cervical Cancer	2037	270
-Embryonal Cancer	2018	211
-Neuroblastoma	1923	258
-Medulloblastoma	2067	9
-Leukemia	1614	320
-Meningioma	979	897
-Liver Cancer	1732	133
-Melanoma	1743	41
-Rhabdomyosarcoma	786	761
-Endometrioid Cancer	587	545
-Brain Cancer	905	139
-Kidney Cancer	699	92
-Skin Cancer	10	20
-Osteosarcoma	29	0
+cancername	#ins_uniq	#del_uniq	#ins_all	#del_all	#sample
+Cervical Cancer	2462	381	4074	540	2
+Leukemia	26581	5119	40339	7993	25
+Brain Cancer	14521	2275	19012	2922	21
+Liver Cancer	7197	608	8659	667	5
+Colorectal Cancer	70808	26384	127997	41980	38
+Melanoma	10459	302	19168	449	11
+Cholangio Cancer	3793	358	3793	358	1
+Skin Cancer	10	20	10	20	1
+Osteosarcoma	29	0	29	0	1
+Pancreatic Cancer	23401	3827	35620	5353	12
+Non-malignant 	14390	2872	24476	4618	12
+Other	6333	1184	6506	1208	2
+Ewing Sarcoma	13916	3299	14597	3349	3
+Endometrioid Cancer	3876	3875	9978	9259	17
+Breast Cancer	23189	2738	31555	3749	9
+Medulloblastoma	16180	120	39267	164	19
+Rhabdomyosarcoma	3794	4033	6286	6091	8
+Myeloma	7311	1423	8995	1692	3
+Embryonal Cancer	3313	384	4036	421	2
+Neuroblastoma	13894	2029	17310	2326	9
+Bladder Cancer	7588	1969	8890	2309	3
+Kidney Cancer	3037	393	3493	461	5
+Meningioma	5501	5766	13702	12548	14
+Adenoid Cystic Cancer	2820	450	2820	450	1
+Lymphoma	90674	11026	141905	19617	36
+Lung Cancer	24604	3005	27054	3103	9
+Prostate Cancer	16658	22427	20861	25907	6
