@@ -1,8 +1,9 @@
 <h3>What is dbInDel</h3>
 dbInDel (http://enhancer-indel.cam-su.org/) is a comprehensive and interactive database cataloging enhancer-associated insertion and deletion variants for both human and murine samples computational analyses of H3K27ac ChIP-Seq data.
 
-<p style="color:#2E75B5">The dbInDel website is built by the <span style="color:red">HTML5</span>  and <span style="color:red">JavaScript libraries</span> , including jQuery (http://jquery.com), <span style="color:red">Bootstrap (http://getbootstrap.com/)</span>  for the client-side user interface. The server-side and interactive data processing are carried out by <span style="color:red">Django (version 2.0.3)</span> . The datasets are stored in a <span style="color:red">MySQL(version 5.7.17),redis(version 5.0.5)</span>  relational database. The web site automatically adjusts the look and feel according to different browsers and devices, ranging from desktop computers to tablets and smart phones.</p>
+<p style="color:#2E75B5">The dbInDel website is built by the <span style="color:red">HTML5</span>  and <span style="color:red">JavaScript libraries</span> , including jQuery (http://jquery.com), <span style="color:red">Bootstrap (http://getbootstrap.com/)</span>  for the client-side user interface. The server-side and interactive data processing are carried out by <span style="color:red">Django (version 2.0.3)</span> . The datasets are stored in <span style="color:red">MySQL (version 5.7.17) and redis (version 5.0.5)</span> relational databases. The web site automatically adjusts the look and feel according to different browsers and devices, ranging from desktop computers to tablets and smart phones.</p>
 <h3>How to use dbindel</h3>
+
 Clone ``` git clone https://github.com/moli-lab/dbIndel.git ```
 
 for virtualenv user,
