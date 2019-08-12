@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}
+    dbIndel - Statistics
+{% endblock %}
+{% block css %}
+{% endblock %}
+{% block scripts %}
+    <script src="static/js/echarts.min.js"></script>
+    <script src="static/js/statistic.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="container fix_nav_margin statistics_content">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#size_plot_panel">
+                        Number of Enhancer-Associated InDels by Cancer Types
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </h4>
+            </div>
+            <div id="size_plot_panel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div id="indel_uniq_plot" class="statistics_plot" style="height: 400px;"><h3>loading...</h3></div>
+                   <br/>
+                    <div id="indel_all_plot" class="statistics_plot" style="height: 400px;"><h3>loading...</h3></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#biosample_plot_panel">
+                        Biosample plot
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </h4>
+            </div>
+            <div id="biosample_plot_panel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <!--<div id="biosample_plot" class="biosample_statistics_plot"><h3>loading...</h3></div>-->
+                    <div id="hg19_cancer_type_pie_plot" class="biosample_statistics_plot" style="height: 280px;"><h3>loading...</h3></div>
+                    <hr>
+                    <div id="mm10_cancer_type_pie_plot" class="biosample_statistics_plot" style="height: 280px;"><h3>loading...</h3></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#heatmap_plot_panel">
+                        Frequencies of genes associated with InDel-containing enhancers across human cancers
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </h4>
+            </div>
+            <div id="heatmap_plot_panel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div id="heatmap_plot" class="statistics_plot heatmap_plot">
+                        <img src="/static/img/Frequencies_of_Enhancer-associated_InDels_genes_in_Cancer_Samples_stat.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

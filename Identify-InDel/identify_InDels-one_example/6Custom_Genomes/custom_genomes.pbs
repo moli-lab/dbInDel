@@ -1,0 +1,293 @@
+#!/bin/sh
+#Custom_Genomes
+#PBS -q normal
+#PBS -P personal
+#PBS -l select=1:ncpus=23
+#PBS -l walltime=24:00:00
+#PBS -N Custom_Genomes
+
+module load bowtie/1.1.2
+module load bowtie2/2.29
+module load samtools/1.3
+module load bedtools/2.25
+
+export PATH=$PATH:/home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64
+export CANCERS="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS"
+export SCAFFOLD="/home/users/nus/csijy/scratch/cistromeTissue/Scaffold_Dev"
+export Enhancers="/home/users/nus/csijy/scratch/cistromeTissue/Enhancers"
+export Cross_Cancer_Sharing_smartEnh="/home/users/nus/csijy/scratch/cistromeTissue/Cross_Cancer_Sharing_smartEnh"
+export dbSNP="/home/users/nus/csijy/scratch/cistromeTissue/dbSNP"
+export Custom_Genomes="/home/users/nus/csijy/scratch/cistromeTissue/Custom_Genomes"
+declare -A k27ac=(
+["DGC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278784_1.fastq"
+["BTIC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278783_1.fastq"
+["tamoxifen_EC12_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198790.fastq"
+["tamoxifen_EC11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198789.fastq"
+["tamoxifen_EC10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198788.fastq"
+["tamoxifen_EC9_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198787.fastq"
+["tamoxifen_EC8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198786.fastq"
+["tamoxifen_EC7_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198785.fastq"
+["tamoxifen_EC6_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198784.fastq"
+["tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198783.fastq"
+["tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198782.fastq"
+["tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198781.fastq"
+["tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198780.fastq"
+["tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198779.fastq"
+["CLL2070_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123606.fastq"
+["CLL1993_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123605.fastq"
+["CLL2062_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123603.fastq"
+["CLL2040_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123601.fastq"
+["CLL1958_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123599.fastq"
+["CLL1239_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123597.fastq"
+["CLL702_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123595.fastq"
+["CLL1252_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123593.fastq"
+["CLL1863_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123591.fastq"
+["SU_DIPG_IV2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014879.fastq"
+["SU_DIPG_IV1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014878.fastq"
+["RH5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720791.fastq"
+["RH4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720774.fastq"
+["RD_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720765.fastq"
+["NS134_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720763.fastq"
+["NS129_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720761.fastq"
+["NCI0082_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720759.fastq"
+["NCI0075_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720757.fastq"
+["CTR_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720755.fastq"
+["non-tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480369.fastq"
+["non-tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480365.fastq"
+["non-tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480359.fastq"
+["non-tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480355.fastq"
+["non-tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480351.fastq"
+["Be2-C_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3363251.fastq"
+["753T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969519.fastq"
+["753N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969518.fastq"
+["750T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969517.fastq"
+["750N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969516.fastq"
+["T24_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946617.fastq"
+["5637_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946615.fastq"
+["J82_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946613.fastq"
+["RT308_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133475.fastq"
+["RT407_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133472.fastq"
+["RT262_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133469.fastq"
+["RT242_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133466.fastq"
+["RT236_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133463.fastq"
+["RT230_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133458.fastq"
+["RT172_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133455.fastq"
+["prefrontal_cortex1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1979001.fastq"
+["prefrontal_cortex2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978995.fastq"
+["Putamen_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978992.fastq"
+["Thalamic_nuclei_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978989.fastq"
+["Caudate_nucleus_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978986.fastq"
+["White_Matter_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978983.fastq"
+["Occipital_Pole_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978980.fastq"
+["FL17_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610188.fastq"
+["FL16_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610186.fastq"
+["FL14_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610180.fastq"
+["FL11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610174.fastq"
+["FL10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610171.fastq"
+["FL8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610165.fastq"
+["FL5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610159.fastq"
+["FL2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610150.fastq"
+["FL1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610148.fastq"
+["P14A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020512.fastq"
+["P107A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020510.fastq"
+)
+
+export hg19fasta="/home/users/nus/csijy/scratch/index/hg19FromGeneCode"
+
+cd $Custom_Genomes
+
+for file in "${!k27ac[@]}"
+do
+  echo $file
+  cp ${k27ac[$file]} $file.fastq
+  #直接复制fastq文件即可
+  #bamToFastq -i ${k27ac[$file]} -fq $file.fastq
+
+  echo -e ">HEADER" > header.txt
+
+  mkdir $file.BWT.REF $file.BWT.INS $file.align.REF $file.align.INS INS_LOCUS.$file REF_LOCUS.$file $file.SAM.INS $file.SAM.REF
+  
+  cp $Cross_Cancer_Sharing_smartEnh/$file.inPeaks.unique.txt .
+  sed s/\_/\\t/g $file.inPeaks.unique.txt > $file.ins.txt
+  export readLen=$(tail -n 1 ${k27ac[$file]}| awk -F\\t '{print length($0)}' )
+  export numIns=$(wc -l $file.ins.txt | awk -F' ' '{print $1}')
+
+  export lineNum=1
+
+  echo -e "
+
+  export lineNum=1
+
+
+  while read p
+  do  
+      export readLen=$readLen
+      export file=$file
+      #补充添加hg19fasta基因组位置
+      export hg19fasta=$hg19fasta
+      #从bed文件里面取出插入位置,然后对应修改成bed3文件格式,分别加减reads长度输出到UPSTREAM和DOWNSTREAM两个文件里
+      #例如：
+      #UPSTREAM：chrY	8407563	8407602
+      #DOWNSTREAM：chrY	8407602	8407643
+      #原来脚本提取序列 39bp + Insertion + 41bp
+      #位置是:$2-readLen $2-1
+      #       $3-1 $3+readLen
+      #修改过后脚本能正确提取40bp + Insertion + 40bp
+      echo \$p | awk -F' ' -v readLen=$readLen '{print \$1 \"\t\" \$2-readLen-1 \"\t\" \$2-1}' > $file.UPSTREAM.B2.bed3
+      echo \$p | awk -F' ' -v readLen=$readLen '{print \$1 \"\t\" \$3-1 \"\t\" \$3+readLen-1}' > $file.DOWNSTREAM.B2.bed3
+      #从bed文件里面取出插入碱基,输出到$file.INSSEQ.B2.txt文件里，文件内容例如：G
+      echo \$p | awk -F' ' '{print \$4}' > $file.INSSEQ.B2.txt
+      
+      #从基因组fasta文件里抽提出目标序列
+      #例如：
+      #上游序列fasta
+      #$file.UPSTREAM.B2.fasta
+      #>chrY:8407563-8407602
+      #AAACGGCAGTTGGTGTTTTGATCCAGACTCTGGGGCCTT
+      #下游序列fasta
+      #$file.DOWNSTREAM.B2.fasta
+      #>chrY:8407602-8407643
+      #GCTGAGGCCAGTGGTCTACCTCTCTAAGCAACTAGATGGGG
+
+      fastaFromBed -fi $hg19fasta/GRCh37.p13.genome.fa -bed $file.UPSTREAM.B2.bed3 -fo $file.UPSTREAM.B2.fasta
+      fastaFromBed -fi $hg19fasta/GRCh37.p13.genome.fa -bed $file.DOWNSTREAM.B2.bed3 -fo $file.DOWNSTREAM.B2.fasta
+
+      #tail -n +2表示从第二行开始输出(包括第二行),即:取出序列内容
+      tail -n +2 $file.UPSTREAM.B2.fasta > $file.UPSTREAM.B2.seq
+      tail -n +2 $file.DOWNSTREAM.B2.fasta > $file.DOWNSTREAM.B2.seq
+      
+      #paste将基因组上下区域的序列连接到一起,生成经过插入碱基的INS_LOCUS基因组和原来的REF_LOCUS基因组序列。
+      #即$file.INS_LOCUS.\$lineNum.B2.seq和$file.REF_LOCUS.\$lineNum.B2.seq
+      paste $file.UPSTREAM.B2.seq $file.INSSEQ.B2.txt $file.DOWNSTREAM.B2.seq | sed s/\\\\\\\t//g > $file.INS_LOCUS.\$lineNum.B2.seq
+      paste $file.UPSTREAM.B2.seq $file.DOWNSTREAM.B2.seq | sed s/\\\\\\\t//g > $file.REF_LOCUS.\$lineNum.B2.seq
+
+      #将序列转换成fasta格式
+      cat header.txt $file.INS_LOCUS.\$lineNum.B2.seq > $file.INS_LOCUS.\$lineNum.B2.fasta
+      cat header.txt $file.REF_LOCUS.\$lineNum.B2.seq > $file.REF_LOCUS.\$lineNum.B2.fasta
+      
+      #为 INS_LOCUS基因组 和 原来的REF_LOCUS基因组 建立bowtie索引,索引分别建立在$file.BWT.INS和$file.BWT.REF下
+      /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie-build $file.INS_LOCUS.\$lineNum.B2.fasta $file.BWT.INS/INS_LOCUS.\$lineNum
+      /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie-build $file.REF_LOCUS.\$lineNum.B2.fasta $file.BWT.REF/REF_LOCUS.\$lineNum
+      
+      #压缩 INS_LOCUS基因组 和 原来的REF_LOCUS基因组
+      gzip -f $file.INS_LOCUS.\$lineNum.B2.fasta $file.REF_LOCUS.\$lineNum.B2.fasta 
+      
+      #将压缩过的 INS_LOCUS基因组 和 原来的REF_LOCUS基因组 分别移动到INS_LOCUS.$file和REF_LOCUS.$file文件夹
+      mv $file.INS_LOCUS.\$lineNum.B2.fasta.gz INS_LOCUS.$file/INS_LOCUS.\$lineNum.B2.fasta.gz
+      mv $file.REF_LOCUS.\$lineNum.B2.fasta.gz REF_LOCUS.$file/REF_LOCUS.\$lineNum.B2.fasta.gz
+ 
+      rm $file.INS_LOCUS.\$lineNum.B2.seq $file.REF_LOCUS.\$lineNum.B2.seq
+
+    lineNum=\$((\$lineNum+1))
+    echo \$lineNum
+  done < $file.ins.txt
+
+  " > $file.tmp.sh
+#################################
+
+
+  export lineNum=1
+  rm $file.align.sh
+
+  while read p
+  do
+    #bowtie的--al参数将比对上的reads输出到fastq文件
+    #--al <fname>  write aligned reads/pairs to file(s) <fname>
+    #输入：输入下面用bowtie一起比对上这些一个一个小基因组的reads($file.INSalignable.fastq)
+    #循环将全部insertion写入bowtie命令,每个insertion对应两条bowtie命令(REF原基因组 和 INS插入后的基因组)
+    echo -e "
+    /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie --chunkmbs 256 --best --strata -m 1 -n 2 --al $file.align.INS/$file.$lineNum.fastq -S $file.BWT.INS/INS_LOCUS.$lineNum $file.INSalignable.fastq --no-unal >$file.SAM.INS/INS_LOCUS.$lineNum.sam
+    /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie --chunkmbs 256 --best --strata -m 1 -n 2 --al $file.align.REF/$file.$lineNum.fastq -S $file.BWT.REF/REF_LOCUS.$lineNum $file.REFalignable.fastq --no-unal >$file.SAM.REF/REF_LOCUS.$lineNum.sam
+
+    " >> $file.align.sh
+    lineNum=$(($lineNum+1))
+  done < $file.ins.txt
+
+#################################
+
+  export lineNum=1
+
+  rm $file.compress.sh
+
+  while read p
+  do
+    #将INS_LOCUS(经过插入)和REF_LOCUS(原基因组)的bowtie索引文件ebwt挨个压缩
+    #将比对到INS(经过插入)和REF(原基因组)的reads序列fastq文件挨个压缩
+    echo -e "
+    gzip -f $file.BWT.INS/INS_LOCUS.$lineNum*ebwt 
+    gzip -f $file.BWT.REF/REF_LOCUS.$lineNum*ebwt 
+    gzip -f $file.align.INS/$file.$lineNum.fastq
+    gzip -f $file.align.REF/$file.$lineNum.fastq
+    " >> $file.compress.sh
+
+    lineNum=$(($lineNum+1))
+    echo $lineNum
+  done < $file.ins.txt
+
+###########################
+
+  export lineNum=1
+
+  rm $file.calculate.sh
+    echo -e "
+    rm counts.$file.txt\n touch counts.$file.txt" > $file.calculate.sh
+
+  while read p
+  do
+    echo -e "
+    export InsMapped=\$(zcat $file.align.INS/$file.$lineNum.fastq.gz | wc -l | awk -F' ' '{print $1}')
+    let InsMapped=\$InsMapped/4
+    InsMapped=\$(echo \$InsMapped)
+    
+    export RefMapped=\$(zcat $file.align.REF/$file.$lineNum.fastq.gz | wc -l | awk -F' ' '{print $1}')
+    let RefMapped=\$RefMapped/4
+    RefMapped=\$(echo \$RefMapped)
+
+    echo -e "$lineNum\\t\$RefMapped\\t\$InsMapped\\t$p" >> counts.$file.txt
+    " >> $file.calculate.sh
+
+
+    lineNum=$(($lineNum+1))
+#     echo $lineNum
+  done < $file.ins.txt
+
+
+#################################
+#################################
+#################################
+
+  bash $file.tmp.sh
+  #该命令是将INS_LOCUS(经过插入)和REF_LOCUS(原基因组)文件夹下面的fasta挨个压缩，而$file.tmp.sh已经将fasta挨个压缩过了
+  #gzip -f INS_LOCUS.$file/*fasta REF_LOCUS.$file/*fasta
+
+  #将INS_LOCUS经过插入的基因组整合为一个fasta
+  #将REF_LOCUS原来的基因组整合为一个fasta
+  zcat INS_LOCUS.$file/*fasta.gz > $file.ALL_INS.fasta
+  zcat REF_LOCUS.$file/*fasta.gz > $file.ALL_REF.fasta
+
+  #为两个基因组建立索引
+  /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie-build $file.ALL_INS.fasta $file.ALL_INS
+  /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie-build $file.ALL_REF.fasta $file.ALL_REF
+
+  sleep 1
+  # 粗放式比对：将所有reads一下子贴到所有的一个个小基因组上，输出能比对上的reads，缩小reads数量，加快速度
+  # 将能够比对上的reads分别输出到:$file.INSalignable.fastq 和 $file.REFalignable.fastq
+  # $file.ALL_INS 和 $file.ALL_REF分别是参考基因组
+  # $file.fastq是测序reads
+  /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie --chunkmbs 256 --best --strata -m $numIns -n 2 -p 24 --al $file.INSalignable.fastq -S $file.ALL_INS $file.fastq > /dev/null
+  /home/users/nus/csijy/scratch/software/bowtie-1.2.2-linux-x86_64/bowtie --chunkmbs 256 --best --strata -m $numIns -n 2 -p 24 --al $file.REFalignable.fastq -S $file.ALL_REF $file.fastq > /dev/null
+
+  #精细式比对：将上一步比对上的reads用一个个bowtie程序挨个比对
+  bash $file.align.sh
+  #将$file.BWT.INS 和 $file.BWT.REF 文件夹里面的bowtie索引文件分别挨个压缩
+  #将$file.align.INS 和 $file.align.REF 文件夹里面精细式比对过，能比对上的reads，按照每个插入的形式挨个压缩
+  bash $file.compress.sh
+  #统计reads在 经过插入的基因组比对上的数量 和 原来基因组比对上的数量 InsMapped RefMapped
+  bash $file.calculate.sh
+  
+  rm $file.fastq
+  rm $file.DOWNSTREAM.B2.bed3 $file.DOWNSTREAM.B2.fasta $file.DOWNSTREAM.B2.seq $file.INSSEQ.B2.txt
+  rm $file.UPSTREAM.B2.bed3 $file.UPSTREAM.B2.$file.UPSTREAM.B2.seq
+
+done
+

@@ -1,0 +1,203 @@
+#!/bin/sh
+#Enhancers
+#PBS -q normal
+#PBS -P personal
+#PBS -l select=1:ncpus=12
+#PBS -l walltime=24:00:00
+#PBS -N Enhancers
+# 设置CANCERS结果的文件夹路径,目的是获得之前用bowtie1跑出来的*.unmapped.fastq
+
+module load bowtie/1.1.2
+module load bowtie2/2.29
+module load samtools/1.3
+module load bedtools/2.25
+
+export CANCERS="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS"
+export SCAFFOLD="/home/users/nus/csijy/scratch/cistromeTissue/Scaffold_Dev"
+export Enhancers="/home/users/nus/csijy/scratch/cistromeTissue/Enhancers"
+declare -A k27ac=(
+["DGC_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/DGC_H3K27ac.sorted.bam"
+["BTIC_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/BTIC_H3K27ac.sorted.bam"
+["tamoxifen_EC12_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC12_H3K27ac.sorted.bam"
+["tamoxifen_EC11_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC11_H3K27ac.sorted.bam"
+["tamoxifen_EC10_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC10_H3K27ac.sorted.bam"
+["tamoxifen_EC9_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC9_H3K27ac.sorted.bam"
+["tamoxifen_EC8_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC8_H3K27ac.sorted.bam"
+["tamoxifen_EC7_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC7_H3K27ac.sorted.bam"
+["tamoxifen_EC6_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC6_H3K27ac.sorted.bam"
+["tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC5_H3K27ac.sorted.bam"
+["tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC4_H3K27ac.sorted.bam"
+["tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC3_H3K27ac.sorted.bam"
+["tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC2_H3K27ac.sorted.bam"
+["tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/tamoxifen_EC1_H3K27ac.sorted.bam"
+["CLL2070_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2070_H3K27ac.sorted.bam"
+["CLL1993_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1993_H3K27ac.sorted.bam"
+["CLL2062_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2062_H3K27ac.sorted.bam"
+["CLL2040_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2040_H3K27ac.sorted.bam"
+["CLL1958_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1958_H3K27ac.sorted.bam"
+["CLL1239_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1239_H3K27ac.sorted.bam"
+["CLL702_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL702_H3K27ac.sorted.bam"
+["CLL1252_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1252_H3K27ac.sorted.bam"
+["CLL1863_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1863_H3K27ac.sorted.bam"
+["SU_DIPG_IV2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/SU_DIPG_IV2_H3K27ac.sorted.bam"
+["SU_DIPG_IV1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/SU_DIPG_IV1_H3K27ac.sorted.bam"
+["RH5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RH5_H3K27ac.sorted.bam"
+["RH4_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RH4_H3K27ac.sorted.bam"
+["RD_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RD_H3K27ac.sorted.bam"
+["NS134_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NS134_H3K27ac.sorted.bam"
+["NS129_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NS129_H3K27ac.sorted.bam"
+["NCI0082_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NCI0082_H3K27ac.sorted.bam"
+["NCI0075_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NCI0075_H3K27ac.sorted.bam"
+["CTR_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CTR_H3K27ac.sorted.bam"
+["non-tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/non-tamoxifen_EC3_H3K27ac.sorted.bam"
+["non-tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/non-tamoxifen_EC5_H3K27ac.sorted.bam"
+["non-tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/non-tamoxifen_EC4_H3K27ac.sorted.bam"
+["non-tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/non-tamoxifen_EC1_H3K27ac.sorted.bam"
+["non-tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/non-tamoxifen_EC2_H3K27ac.sorted.bam"
+["Be2-C_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Be2-C_H3K27ac.sorted.bam"
+["753T_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/753T_H3K27ac.sorted.bam"
+["753N_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/753N_H3K27ac.sorted.bam"
+["750T_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/750T_H3K27ac.sorted.bam"
+["750N_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/750N_H3K27ac.sorted.bam"
+["T24_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/T24_H3K27ac.sorted.bam"
+["5637_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/5637_H3K27ac.sorted.bam"
+["J82_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/J82_H3K27ac.sorted.bam"
+["RT308_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT308_H3K27ac.sorted.bam"
+["RT407_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT407_H3K27ac.sorted.bam"
+["RT262_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT262_H3K27ac.sorted.bam"
+["RT242_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT242_H3K27ac.sorted.bam"
+["RT236_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT236_H3K27ac.sorted.bam"
+["RT230_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT230_H3K27ac.sorted.bam"
+["RT172_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT172_H3K27ac.sorted.bam"
+["prefrontal_cortex1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/prefrontal_cortex1_H3K27ac.sorted.bam"
+["prefrontal_cortex2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/prefrontal_cortex2_H3K27ac.sorted.bam"
+["Putamen_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Putamen_H3K27ac.sorted.bam"
+["Thalamic_nuclei_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Thalamic_nuclei_H3K27ac.sorted.bam"
+["Caudate_nucleus_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Caudate_nucleus_H3K27ac.sorted.bam"
+["White_Matter_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/White_Matter_H3K27ac.sorted.bam"
+["Occipital_Pole_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Occipital_Pole_H3K27ac.sorted.bam"
+["FL17_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL17_H3K27ac.sorted.bam"
+["FL16_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL16_H3K27ac.sorted.bam"
+["FL14_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL14_H3K27ac.sorted.bam"
+["FL11_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL11_H3K27ac.sorted.bam"
+["FL10_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL10_H3K27ac.sorted.bam"
+["FL8_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL8_H3K27ac.sorted.bam"
+["FL5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL5_H3K27ac.sorted.bam"
+["FL2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL2_H3K27ac.sorted.bam"
+["FL1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL1_H3K27ac.sorted.bam"
+["P14A_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/P14A_H3K27ac.sorted.bam"
+["P107A_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/P107A_H3K27ac.sorted.bam"
+)
+
+declare -A input=(
+["DGC_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/DGC_WCE_Input.sorted.bam"
+["BTIC_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/BTIC_WCE_Input.sorted.bam"
+["tamoxifen_EC12_H3K27ac"]=""
+["tamoxifen_EC11_H3K27ac"]=""
+["tamoxifen_EC10_H3K27ac"]=""
+["tamoxifen_EC9_H3K27ac"]=""
+["tamoxifen_EC8_H3K27ac"]=""
+["tamoxifen_EC7_H3K27ac"]=""
+["tamoxifen_EC6_H3K27ac"]=""
+["tamoxifen_EC5_H3K27ac"]=""
+["tamoxifen_EC4_H3K27ac"]=""
+["tamoxifen_EC3_H3K27ac"]=""
+["tamoxifen_EC2_H3K27ac"]=""
+["tamoxifen_EC1_H3K27ac"]=""
+["CLL2070_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2070_WCE_Input.sorted.bam"
+["CLL1993_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1993_WCE_Input.sorted.bam"
+["CLL2062_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2062_WCE_Input.sorted.bam"
+["CLL2040_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL2040_WCE_Input.sorted.bam"
+["CLL1958_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1958_WCE_Input.sorted.bam"
+["CLL1239_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1239_WCE_Input.sorted.bam"
+["CLL702_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL702_WCE_Input.sorted.bam"
+["CLL1252_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1252_WCE_Input.sorted.bam"
+["CLL1863_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CLL1863_WCE_Input.sorted.bam"
+["SU_DIPG_IV2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/SU_DIPG_IV2_WCE_Input.sorted.bam"
+["SU_DIPG_IV1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/SU_DIPG_IV1_WCE_Input.sorted.bam"
+["RH5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RH5_WCE_Input.sorted.bam"
+["RH4_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RH4_WCE_Input.sorted.bam"
+["RD_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RD_WCE_Input.sorted.bam"
+["NS134_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NS134_WCE_Input.sorted.bam"
+["NS129_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NS129_WCE_Input.sorted.bam"
+["NCI0082_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NCI0082_WCE_Input.sorted.bam"
+["NCI0075_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/NCI0075_WCE_Input.sorted.bam"
+["CTR_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/CTR_WCE_Input.sorted.bam"
+["non-tamoxifen_EC3_H3K27ac"]=""
+["non-tamoxifen_EC5_H3K27ac"]=""
+["non-tamoxifen_EC4_H3K27ac"]=""
+["non-tamoxifen_EC1_H3K27ac"]=""
+["non-tamoxifen_EC2_H3K27ac"]=""
+["Be2-C_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/Be2-C_WCE_Input.sorted.bam"
+["753T_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/753T_WCE_Input.sorted.bam"
+["753N_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/753N_WCE_Input.sorted.bam"
+["750T_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/750T_WCE_Input.sorted.bam"
+["750N_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/750N_WCE_Input.sorted.bam"
+["T24_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/T24_WCE_Input.sorted.bam"
+["5637_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/5637_WCE_Input.sorted.bam"
+["J82_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/J82_WCE_Input.sorted.bam"
+["RT308_H3K27ac"]=""
+["RT407_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT407_WCE_Input.sorted.bam"
+["RT262_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT262_WCE_Input.sorted.bam"
+["RT242_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT242_WCE_Input.sorted.bam"
+["RT236_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT236_WCE_Input.sorted.bam"
+["RT230_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT230_WCE_Input.sorted.bam"
+["RT172_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/RT172_WCE_Input.sorted.bam"
+["prefrontal_cortex1_H3K27ac"]=""
+["prefrontal_cortex2_H3K27ac"]=""
+["Putamen_H3K27ac"]=""
+["Thalamic_nuclei_H3K27ac"]=""
+["Caudate_nucleus_H3K27ac"]=""
+["White_Matter_H3K27ac"]=""
+["Occipital_Pole_H3K27ac"]=""
+["FL17_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL17_WCE_Input.sorted.bam"
+["FL16_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL16_WCE_Input.sorted.bam"
+["FL14_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL14_WCE_Input.sorted.bam"
+["FL11_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL11_WCE_Input.sorted.bam"
+["FL10_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL10_WCE_Input.sorted.bam"
+["FL8_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL8_WCE_Input.sorted.bam"
+["FL5_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL5_WCE_Input.sorted.bam"
+["FL2_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL2_WCE_Input.sorted.bam"
+["FL1_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/FL1_WCE_Input.sorted.bam"
+["P14A_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/P14A_WCE_Input.sorted.bam"
+["P107A_H3K27ac"]="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS/P107A_WCE_Input.sorted.bam"
+)
+cd $Enhancers
+
+
+#原来代码意义:
+#"有H3K27ac+Input的细胞系" "只有H3K27ac的细胞系"分开跑macs
+#将Insertion与Enhancer做intersect，顺带统计每个细胞系有多少Enhancer
+#最后将所有的Enhancer Merge到一个文件里
+#
+for file in "${!k27ac[@]}"
+do
+  echo $file
+  if [ ! -z ${input[$file]} ]
+  then
+    macs -t ${k27ac[$file]} -c ${input[$file]} -n $file\_wc_p9_kdauto -p 1e-9 --keep-dup=auto --wig --space=50 --single-profile
+    gunzip $file\_wc_p9_kdauto_MACS_wiggle/treat/$file\_wc_p9_kdauto_treat_afterfiting_all.wig.gz
+    wigToBigWig $file\_wc_p9_kdauto_MACS_wiggle/treat/$file\_wc_p9_kdauto_treat_afterfiting_all.wig $hg19fasta/hg19.chrom.sizes $file\_wc_p9_kdauto_MACS_wiggle/treat/$file\_wc_p9_kdauto_treat_afterfiting_all.bw
+    gzip $file\_wc_p9_kdauto_MACS_wiggle/treat/$file\_wc_p9_kdauto_treat_afterfiting_all.bw
+
+    wigToBigWig $file\_wc_p9_kdauto_MACS_wiggle/control/$file\_wc_p9_kdauto_control_afterfiting_all.wig $hg19fasta/hg19.chrom.sizes $file\_wc_p9_kdauto_MACS_wiggle/control/$file\_wc_p9_kdauto_control_afterfiting_all.bw
+    gzip $file\_wc_p9_kdauto_MACS_wiggle/control/$file\_wc_p9_kdauto_control_afterfiting_all.bw
+    ln -s $file\_wc_p9_kdauto_peaks.bed $file\_peaks.bed
+
+  else
+
+    macs -t ${k27ac[$file]} -n $file\_nc_p9_kdauto -p 1e-9 --keep-dup=auto --wig --space=50 --single-profile
+    gunzip $file\_nc_p9_kdauto_MACS_wiggle/treat/$file\_nc_p9_kdauto_treat_afterfiting_all.wig.gz
+    wigToBigWig $file\_nc_p9_kdauto_MACS_wiggle/treat/$file\_nc_p9_kdauto_treat_afterfiting_all.wig $hg19fasta/hg19.chrom.sizes $file\_nc_p9_kdauto_MACS_wiggle/treat/$file\_nc_p9_kdauto_treat_afterfiting_all.bw
+    gzip $file\_nc_p9_kdauto_MACS_wiggle/treat/$file\_nc_p9_kdauto_treat_afterfiting_all.bw
+    wigToBigWig $file\_nc_p9_kdauto_MACS_wiggle/control/$file\_nc_p9_kdauto_control_afterfiting_all.wig $hg19fasta/hg19.chrom.sizes $file\_nc_p9_kdauto_MACS_wiggle/control/$file\_nc_p9_kdauto_control_afterfiting_all.bw
+    gzip $file\_nc_p9_kdauto_MACS_wiggle/control/$file\_nc_p9_kdauto_control_afterfiting_all.bw
+
+    ln -s $file\_nc_p9_kdauto_peaks.bed $file\_peaks.bed
+  fi
+  
+  #intersectBed -wa -c -a $ins -b $file\_peaks.bed.bed > $file.txt
+
+done
+
+

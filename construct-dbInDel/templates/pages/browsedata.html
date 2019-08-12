@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load makeurl %}
+
+{% block title %}
+    dbIndel - Browse Data
+{% endblock %}
+{% block css %}
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.bootstrap.min.css' %}">
+{% endblock %}
+{% block scripts %}
+    <!-- DataTables -->
+    <script type="text/javascript" charset="UTF-8" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" charset="UTF-8" src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+    <script type="text/javascript" charset="UTF-8" src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+    <script type="text/javascript" charset="UTF-8" src="{% static 'js/responsive.bootstrap.min.js' %}"></script>
+    <script type="text/javascript" charset="UTF-8" src="{% static 'js/browsedata.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="panel-group" role="tablist">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Species</h4>
+                        </div>
+                        <div class="list-group">
+                            {% for item in genome %}
+                                {% if  'genome'  in request.GET %}
+                                    <a href="{% url 'browsedata' %}{% delete_arg request 'genome' %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center active">
+                                        {% if item.genome == 'hg19' %}
+                                            human
+                                        {% else %}
+                                            murine
+                                        {% endif %}
+                                        <span class="badge badge-primary badge-pill"><span
+                                                class="glyphicon glyphicon-remove"></span></span></a>
+                                {% else %}
+                                    <a href="{% url 'browsedata' %}{% add_arg request 'genome' item %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center">
+                                        {% if item.genome == 'hg19' %}
+                                            human
+                                        {% else %}
+                                            murine
+                                        {% endif %}
+                                        <span class="badge badge-primary badge-pill">{{ item.genome__count }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" role="tablist">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Biosample Type</h4>
+                        </div>
+                        <div class="list-group">
+                            {% for item in biosample_type %}
+                                {% if 'biosample_type' in request.GET %}
+                                    <p>success</p>
+                                    <a href="{% url 'browsedata' %}{% delete_arg request 'biosample_type' %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center active">{{ item.biosample_type }}
+                                        <span class="badge badge-primary badge-pill"><span
+                                                class="glyphicon glyphicon-remove"></span></span></a>
+                                {% else %}
+                                    <a href="{% url 'browsedata' %}{% add_arg request 'biosample_type' item %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center">{{ item.biosample_type }}
+                                        <span class="badge badge-primary badge-pill">{{ item.biosample_type__count }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" role="tablist">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Organ</h4>
+                        </div>
+                        <div class="list-group">
+                            {% for item in organ|slice:":5" %}
+                                {% if 'organ' in request.GET %}
+                                    <a href="{% url 'browsedata' %}{% delete_arg request 'organ' %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center active">{{ item.organ }}
+                                        <span class="badge badge-primary badge-pill"><span
+                                                class="glyphicon glyphicon-remove"></span></span></a>
+                                {% else %}
+                                    <a href="{% url 'browsedata' %}{% add_arg request 'organ' item %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center">{{ item.organ }}
+                                        <span class="badge badge-primary badge-pill">{{ item.organ__count }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if organ|length > 5 %}
+                                <div id="organ_collapse" class="collapse">
+                                    {% for item in organ|slice:"5:" %}
+                                        <a href="{% url 'browsedata' %}{% add_arg request 'organ' item %}"
+                                           class="list-group-item d-flex justify-content-between align-items-center">{{ item.organ }}
+                                            <span class="badge badge-primary badge-pill">{{ item.organ__count }}</span></a>
+                                    {% endfor %}
+                                </div>
+                                <a class="text-center list-group-item" data-toggle="collapse"
+                                   href="#organ_collapse" id="organ_collapse_btn">
+                                    <span class="glyphicon glyphicon-triangle-bottom"></span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" role="tablist">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Cell Type</h4>
+                        </div>
+                        <div class="list-group">
+                            {% for item in cell_type|slice:":5" %}
+                                {% if 'cell_type' in request.GET %}
+                                    <a href="{% url 'browsedata' %}{% delete_arg request 'cell_type' %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center active">{{ item.cell_type }}
+                                        <span class="badge badge-primary badge-pill"><span
+                                                class="glyphicon glyphicon-remove"></span></span></a>
+                                {% else %}
+                                    <a href="{% url 'browsedata' %}{% add_arg request 'cell_type' item %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center">{{ item.cell_type }}
+                                        <span class="badge badge-primary badge-pill">{{ item.cell_type__count }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if cell_type|length > 5 %}
+                                <div id="cell_type_collapse" class="collapse">
+                                    {% for item in cell_type|slice:"5:" %}
+                                        <a href="{% url 'browsedata' %}{% add_arg request 'cell_type' item %}"
+                                           class="list-group-item d-flex justify-content-between align-items-center">{{ item.cell_type }}
+                                            <span class="badge badge-primary badge-pill">{{ item.cell_type__count }}</span></a>
+                                    {% endfor %}
+                                </div>
+                                <a class="text-center list-group-item" data-toggle="collapse"
+                                   href="#cell_type_collapse" id="cell_type_collapse_btn">
+                                    <span class="glyphicon glyphicon-triangle-bottom"></span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" role="tablist">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Cancer Type</h4>
+                        </div>
+                        <div class="list-group">
+                            {% for item in cancer_type|slice:":5" %}
+                                {% if 'cancer_type' in request.GET %}
+                                    <a href="{% url 'browsedata' %}{% delete_arg request 'cancer_type' %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center active">{{ item.cancer_type }}
+                                        <span class="badge badge-primary badge-pill"><span
+                                                class="glyphicon glyphicon-remove"></span></span></a>
+                                {% else %}
+                                    <a href="{% url 'browsedata' %}{% add_arg request 'cancer_type' item %}"
+                                       class="list-group-item d-flex justify-content-between align-items-center">{{ item.cancer_type }}
+                                        <span class="badge badge-primary badge-pill">{{ item.cancer_type__count }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if cancer_type|length > 5 %}
+                                <div id="cancer_type_collapse" class="collapse">
+                                    {% for item in cancer_type|slice:"5:" %}
+                                        <a href="{% url 'browsedata' %}{% add_arg request 'cancer_type' item %}"
+                                           class="list-group-item d-flex justify-content-between align-items-center">{{ item.cancer_type }}
+                                            <span class="badge badge-primary badge-pill">{{ item.cancer_type__count }}</span></a>
+                                    {% endfor %}
+                                </div>
+                                <a class="text-center list-group-item" data-toggle="collapse"
+                                   href="#cancer_type_collapse" id="cancer_type_collapse_btn">
+                                    <span class="glyphicon glyphicon-triangle-bottom"></span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-10">
+                <table id="samples" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th style="text-align:center">Sample</th>
+                        <th style="text-align:center">Species</th>
+                        <th style="text-align:center">Biosample Type</th>
+                        <th style="text-align:center">Organ</th>
+                        <th style="text-align:center">Cell Type</th>
+                        <th style="text-align:center">Remark</th>
+                        <th style="text-align:center">#indel</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

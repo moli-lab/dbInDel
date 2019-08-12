@@ -1,3 +1,0 @@
-Cell Line	4
-Tissue	9
-Primary Cell	8

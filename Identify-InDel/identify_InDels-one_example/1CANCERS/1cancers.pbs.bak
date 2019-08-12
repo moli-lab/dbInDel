@@ -1,0 +1,249 @@
+#!/bin/sh
+#CANCERS
+#PBS -q normal
+#PBS -P personal
+#PBS -l select=1:ncpus=23
+#PBS -l walltime=24:00:00
+#PBS -N CANCERSpblat1
+
+module load bowtie/1.1.2
+module load bowtie2/2.29
+module load samtools/1.3
+module load bedtools/2.25
+
+
+export CANCERS="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS"
+export SCAFFOLD="/home/users/nus/csijy/scratch/cistromeTissue/Scaffold_Dev"
+declare -A k27ac=(
+["DGC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278784_1.fastq"
+["BTIC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278783_1.fastq"
+["tamoxifen_EC12_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198790.fastq"
+["tamoxifen_EC11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198789.fastq"
+["tamoxifen_EC10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198788.fastq"
+["tamoxifen_EC9_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198787.fastq"
+["tamoxifen_EC8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198786.fastq"
+["tamoxifen_EC7_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198785.fastq"
+["tamoxifen_EC6_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198784.fastq"
+["tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198783.fastq"
+["tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198782.fastq"
+["tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198781.fastq"
+["tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198780.fastq"
+["tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198779.fastq"
+["CLL2070_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123606.fastq"
+["CLL1993_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123605.fastq"
+["CLL2062_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123603.fastq"
+["CLL2040_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123601.fastq"
+["CLL1958_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123599.fastq"
+["CLL1239_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123597.fastq"
+["CLL702_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123595.fastq"
+["CLL1252_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123593.fastq"
+["CLL1863_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123591.fastq"
+["SU_DIPG_IV2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014879.fastq"
+["SU_DIPG_IV1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014878.fastq"
+["RH5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720791.fastq"
+["RH4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720774.fastq"
+["RD_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720765.fastq"
+["NS134_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720763.fastq"
+["NS129_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720761.fastq"
+["NCI0082_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720759.fastq"
+["NCI0075_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720757.fastq"
+["CTR_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720755.fastq"
+["non-tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480369.fastq"
+["non-tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480365.fastq"
+["non-tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480359.fastq"
+["non-tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480355.fastq"
+["non-tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480351.fastq"
+["Be2-C_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3363251.fastq"
+["753T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969519.fastq"
+["753N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969518.fastq"
+["750T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969517.fastq"
+["750N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969516.fastq"
+["T24_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946617.fastq"
+["5637_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946615.fastq"
+["J82_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946613.fastq"
+["RT308_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133475.fastq"
+["RT407_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133472.fastq"
+["RT262_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133469.fastq"
+["RT242_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133466.fastq"
+["RT236_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133463.fastq"
+["RT230_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133458.fastq"
+["RT172_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133455.fastq"
+["prefrontal_cortex1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1979001.fastq"
+["prefrontal_cortex2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978995.fastq"
+["Putamen_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978992.fastq"
+["Thalamic_nuclei_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978989.fastq"
+["Caudate_nucleus_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978986.fastq"
+["White_Matter_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978983.fastq"
+["Occipital_Pole_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978980.fastq"
+["FL17_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610188.fastq"
+["FL16_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610186.fastq"
+["FL14_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610180.fastq"
+["FL11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610174.fastq"
+["FL10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610171.fastq"
+["FL8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610165.fastq"
+["FL5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610159.fastq"
+["FL2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610150.fastq"
+["FL1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610148.fastq"
+["P14A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020512.fastq"
+["P107A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020510.fastq"
+)
+declare -A input=(
+["DGC_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5278910.fastq"
+["BTIC_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5278910.fastq"
+["tamoxifen_EC12_WCE_Input"]=""
+["tamoxifen_EC11_WCE_Input"]=""
+["tamoxifen_EC10_WCE_Input"]=""
+["tamoxifen_EC9_WCE_Input"]=""
+["tamoxifen_EC8_WCE_Input"]=""
+["tamoxifen_EC7_WCE_Input"]=""
+["tamoxifen_EC6_WCE_Input"]=""
+["tamoxifen_EC5_WCE_Input"]=""
+["tamoxifen_EC4_WCE_Input"]=""
+["tamoxifen_EC3_WCE_Input"]=""
+["tamoxifen_EC2_WCE_Input"]=""
+["tamoxifen_EC1_WCE_Input"]=""
+["CLL2070_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123607.fastq"
+["CLL1993_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123604.fastq"
+["CLL2062_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123602.fastq"
+["CLL2040_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123600.fastq"
+["CLL1958_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123598.fastq"
+["CLL1239_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123596.fastq"
+["CLL702_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123594.fastq"
+["CLL1252_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123592.fastq"
+["CLL1863_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR5123590.fastq"
+["SU_DIPG_IV2_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR4014889.fastq"
+["SU_DIPG_IV1_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR4014889.fastq"
+["RH5_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720792.fastq"
+["RH4_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720780.fastq"
+["RD_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720766.fastq"
+["NS134_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720764.fastq"
+["NS129_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720762.fastq"
+["NCI0082_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720760.fastq"
+["NCI0075_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720758.fastq"
+["CTR_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3720756.fastq"
+["non-tamoxifen_EC3_WCE_Input"]=""
+["non-tamoxifen_EC5_WCE_Input"]=""
+["non-tamoxifen_EC4_WCE_Input"]=""
+["non-tamoxifen_EC1_WCE_Input"]=""
+["non-tamoxifen_EC2_WCE_Input"]=""
+["Be2-C_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR3363253.fastq"
+["753T_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2969523.fastq"
+["753N_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2969522.fastq"
+["750T_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2969521.fastq"
+["750N_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2969520.fastq"
+["T24_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2946616.fastq"
+["5637_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2946614.fastq"
+["J82_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2946612.fastq"
+["RT308_WCE_Input"]=""
+["RT407_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133487.fastq"
+["RT262_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133486.fastq"
+["RT242_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133485.fastq"
+["RT236_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133484.fastq"
+["RT230_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133483.fastq"
+["RT172_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR2133482.fastq"
+["prefrontal_cortex1_WCE_Input"]=""
+["prefrontal_cortex2_WCE_Input"]=""
+["Putamen_WCE_Input"]=""
+["Thalamic_nuclei_WCE_Input"]=""
+["Caudate_nucleus_WCE_Input"]=""
+["White_Matter_WCE_Input"]=""
+["Occipital_Pole_WCE_Input"]=""
+["FL17_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610189.fastq"
+["FL16_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610187.fastq"
+["FL14_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610182.fastq"
+["FL11_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610176.fastq"
+["FL10_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610172.fastq"
+["FL8_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610167.fastq"
+["FL5_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610161.fastq"
+["FL2_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610152.fastq"
+["FL1_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1610147.fastq"
+["P14A_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1020513.fastq"
+["P107A_WCE_Input"]="/home/users/nus/csijy/scratch/data/SRR1020511.fastq"
+
+)
+export bowtie1_hg19="/home/users/nus/csijy/scratch/index/1-bowtie/hg19"
+export bowtie2_hg19="/home/users/nus/csijy/scratch/index/2-bowtie/hg19"
+export genomefasta="/home/users/nus/csijy/scratch/index/genome-fasta"
+
+cd $CANCERS
+
+perl extract_exons.pl hg19_refseq.ucsc | tail -n +2 > hg19_refseq_exons.bed
+
+for file in "${!k27ac[@]}"
+do
+  echo $file
+  #此处可以用-p设置线程数
+  bowtie --chunkmbs 256 --best --strata -m 1 -n 2 -p 24 -S $bowtie1_hg19 --un $file.unmapped.fastq --max /dev/null ${k27ac[$file]} > $file.sam
+  #--chunkmbs 调整程序内存占用
+  #-m 1 输出匹配最好的位置Suppress all alignments for a particular read or pair if more than 1 reportable alignments exist for it.
+  #--best --strata输出匹配最好的位置
+  #-n/--seedmms 2 reads的最左端质量很高,称作"seed",此处设置"seed"区域最高错配数目
+  #Maximum number of mismatches permitted in the "seed", i.e. the first L base pairs of the read (where L is set with -l/--seedlen). 
+  #This may be 0, 1, 2 or 3 and the default is 2. This option is mutually exclusive with the -v option.
+  #-p 24多线程
+  #输出的 $file.sam 文件中只会有两种情况:
+  # 一、"0正链"OR"16负链"的40M完全匹配;二、"4完全没匹配上"的;
+  
+  bowtie2 -p 24 -k 1 -q -x $bowtie2_hg19 -U $file.unmapped.fastq -S $file.unmapped.bwt2_v6.sam
+  #-k 1输出最好的匹配(事实上,bowtie2设置-k之后,会输出第一个匹配位置就停止,而不是输出最好的位置停止)
+  #-q输入fastq文件
+  #-x指定基因组
+  #-p 24多线程
+  #输出的 $file.sam 文件中有三种情况:
+  # 一、"0正链"OR"16负链"的40M完全匹配;二、"4完全没匹配上"的;三、"0正链"OR"16负链"的允许错配的,例如"31M2I2M1I4M" "23M1D17M" "3M1I27M1I3M1D5M"
+  
+  samtools view -bS $file.sam > $file_v1.bam
+  bedtools intersect -v -abam $file_v1.bam -b black.list > $file.bam
+  samtools sort --threads 24 $file.bam -o $file.sorted.bam
+  java -d64 -jar picard.jar MarkDuplicates I=$file.sorted.bam O=$file.dedup_reads.bam M=metric.txt ASSUME_SORTED=true REMOVE_DUPLICATES=true
+  rm $file.sorted.bam
+  mv $file.dedup_reads.bam $file.sorted.bam
+  samtools index $file.sorted.bam
+  rm -rf $file_v1.bam $file.bam $file.sam
+  
+  awk -F\\t '{if($6 ~ "I") print $0}' $file.unmapped.bwt2_v6.sam > temp.sam
+  # 这里需要注意一下,是否真的是前86行
+  head -n 86 $file.unmapped.bwt2_v6.sam > header
+  cat header temp.sam > $file.unmapped.bwt2.I.sam
+  rm -rf temp.sam $file.unmapped.bwt2.sam
+  samtools view -bS $file.unmapped.bwt2.I.sam > $file.unmapped.bwt2.I.bam
+  samtools sort $file.unmapped.bwt2.I.bam -o $file.unmapped.bwt2.I.sorted.bam
+  samtools index $file.unmapped.bwt2.I.sorted.bam
+  
+  intersectBed -v -a $file.unmapped.bwt2.I.sorted.bam -b hg19_refseq_exons.bed > $file.unmapped.bwt2.I.noExon.sorted.bam
+  samtools view $file.unmapped.bwt2.I.noExon.sorted.bam > $file.unmapped.bwt2.I.noExon.sorted.sam
+  # String for mismatching positions in the format of [0-9]+(([ACGTN]|\^[ACGTN]+)[0-9]+)*
+  awk -F\\t '{ 
+   if($18 ~ "MD") 
+     print ">"$3"."$4"."$18"."$6 "\n" $10
+   else
+     print ">"$3"."$4"."$19"."$6 "\n" $10
+ }' $file.unmapped.bwt2.I.noExon.sorted.sam > $file.unmapped.bwt2.I.noExon.fasta
+  sed -i s/\:/\./g $file.unmapped.bwt2.I.noExon.fasta
+#  
+  awk -F\\t '{ 
+   if($18 ~ "MD") 
+     print "@"$3"."$4"."$18"."$6 "\n" $10 "\n+\n" $11
+   else
+     print "@"$3"."$4"."$19"."$6 "\n" $10 "\n+\n" $11
+  }' $file.unmapped.bwt2.I.noExon.sorted.sam > $file.unmapped.bwt2.I.noExon.fastq
+  sed -i s/\:/\./g $file.unmapped.bwt2.I.noExon.fastq
+  
+done
+
+
+for file in "${!input[@]}"
+do
+  echo $file
+  #此处可以用-p设置线程数
+  bowtie --chunkmbs 256 --best --strata -m 1 -n 2 -p 24 -S $bowtie1_hg19 --un $file.unmapped.fastq --max /dev/null ${input[$file]} > $file.sam
+  samtools view -bS $file.sam > $file_v1.bam
+  bedtools intersect -v -abam $file_v1.bam -b black.list > $file.bam
+  samtools sort --threads 24 $file.bam -o $file.sorted.bam
+  java -d64 -jar picard.jar MarkDuplicates I=$file.sorted.bam O=$file.dedup_reads.bam M=metric.txt ASSUME_SORTED=true REMOVE_DUPLICATES=true
+  rm $file.sorted.bam
+  mv $file.dedup_reads.bam $file.sorted.bam
+  samtools index $file.sorted.bam
+  rm -rf $file_v1.bam $file.bam $file.sam
+done
+

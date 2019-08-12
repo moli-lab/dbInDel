@@ -1,0 +1,124 @@
+#!/bin/sh
+#CANCERS
+#PBS -q normal
+#PBS -P personal
+#PBS -l select=1
+#PBS -l walltime=24:00:00
+#PBS -N CANCERS2
+
+module load bowtie/1.1.2
+module load bowtie2/2.29
+module load samtools/1.3
+module load bedtools/2.25
+
+export CANCERS="/home/users/nus/csijy/scratch/cistromeTissue/CANCERS"
+export SCAFFOLD="/home/users/nus/csijy/scratch/cistromeTissue/Scaffold_Dev"
+declare -A k27ac=(
+["DGC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278784_1.fastq"
+["BTIC_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5278783_1.fastq"
+["tamoxifen_EC12_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198790.fastq"
+["tamoxifen_EC11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198789.fastq"
+["tamoxifen_EC10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198788.fastq"
+["tamoxifen_EC9_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198787.fastq"
+["tamoxifen_EC8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198786.fastq"
+["tamoxifen_EC7_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198785.fastq"
+["tamoxifen_EC6_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198784.fastq"
+["tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198783.fastq"
+["tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198782.fastq"
+["tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198781.fastq"
+["tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198780.fastq"
+["tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5198779.fastq"
+["CLL2070_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123606.fastq"
+["CLL1993_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123605.fastq"
+["CLL2062_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123603.fastq"
+["CLL2040_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123601.fastq"
+["CLL1958_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123599.fastq"
+["CLL1239_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123597.fastq"
+["CLL702_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123595.fastq"
+["CLL1252_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123593.fastq"
+["CLL1863_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR5123591.fastq"
+["SU_DIPG_IV2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014879.fastq"
+["SU_DIPG_IV1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR4014878.fastq"
+["RH5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720791.fastq"
+["RH4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720774.fastq"
+["RD_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720765.fastq"
+["NS134_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720763.fastq"
+["NS129_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720761.fastq"
+["NCI0082_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720759.fastq"
+["NCI0075_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720757.fastq"
+["CTR_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3720755.fastq"
+["non-tamoxifen_EC3_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480369.fastq"
+["non-tamoxifen_EC5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480365.fastq"
+["non-tamoxifen_EC4_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480359.fastq"
+["non-tamoxifen_EC1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480355.fastq"
+["non-tamoxifen_EC2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3480351.fastq"
+["Be2-C_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR3363251.fastq"
+["753T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969519.fastq"
+["753N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969518.fastq"
+["750T_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969517.fastq"
+["750N_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2969516.fastq"
+["T24_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946617.fastq"
+["5637_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946615.fastq"
+["J82_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2946613.fastq"
+["RT308_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133475.fastq"
+["RT407_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133472.fastq"
+["RT262_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133469.fastq"
+["RT242_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133466.fastq"
+["RT236_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133463.fastq"
+["RT230_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133458.fastq"
+["RT172_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR2133455.fastq"
+["prefrontal_cortex1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1979001.fastq"
+["prefrontal_cortex2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978995.fastq"
+["Putamen_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978992.fastq"
+["Thalamic_nuclei_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978989.fastq"
+["Caudate_nucleus_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978986.fastq"
+["White_Matter_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978983.fastq"
+["Occipital_Pole_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1978980.fastq"
+["FL17_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610188.fastq"
+["FL16_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610186.fastq"
+["FL14_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610180.fastq"
+["FL11_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610174.fastq"
+["FL10_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610171.fastq"
+["FL8_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610165.fastq"
+["FL5_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610159.fastq"
+["FL2_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610150.fastq"
+["FL1_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1610148.fastq"
+["P14A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020512.fastq"
+["P107A_H3K27ac"]="/home/users/nus/csijy/scratch/data/SRR1020510.fastq"
+)
+
+
+export bowtie1_hg19="/home/users/nus/csijy/scratch/index/1-bowtie/hg19"
+export bowtie2_hg19="/home/users/nus/csijy/scratch/index/2-bowtie/hg19"
+export genomefasta="/home/users/nus/csijy/scratch/index/genome-fasta"
+
+cd $CANCERS
+
+perl extract_exons.pl hg19_refseq.ucsc | tail -n +2 > hg19_refseq_exons.bed
+
+for file in "${!k27ac[@]}"
+do
+  echo $file
+
+  for chrpath in $genomefasta/chr*.fa
+  do
+    export chr=`basename $chrpath`
+    head -n -1 $chr.$file.blat.psl > $chr.$file.blat.psl.clean #把没跑出来的表最后一行去掉
+    head -n -1 $chr.$file.blat.psl.tmp.1 >> $chr.$file.blat.psl.clean  #把没跑出来的表最后一行去掉,追加到一起
+    tail -n +6 $chr.$file.blat.psl.clean > $chr.$file.blat.psl.tmp #去掉表头
+  done
+
+  cat *.$file.blat.psl.tmp > $file.all_chroms.psl
+  #rm -rf *$file.blat.psl.tmp
+  #rm -rf *$file.blat.psl
+  perl filter_blat_output_v2.pl $file.all_chroms.psl 9 > $file.all_chroms.psl.out
+  perl fastq_to_2col.pl $file.unmapped.bwt2.I.noExon.fastq > $file.unmapped.bwt2.I.noExon.2col
+
+  perl vlookup.pl $file.all_chroms.psl.sam 0 $file.unmapped.bwt2.I.noExon.2col 0 1 $file.all_chroms.psl.sam.1
+  perl vlookup.pl $file.all_chroms.psl.sam.1 0 $file.unmapped.bwt2.I.noExon.2col 0 2 $file.all_chroms.psl.sam.2
+  awk -F\\t '{print $1 "\t" $2 "\t" $3 "\t" $4+1 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $12 "\t" $13}' $file.all_chroms.psl.sam.2 > $file.all_chroms.psl.real.sam
+  rm -rf $file.all_chroms.psl.sam.1 $file.all_chroms.psl.sam.2
+
+  perl filter_sam_by_string.pl $file.all_chroms.psl.real.sam $file.all_chroms.psl.real.filt.sam $file.all_chroms.psl.inserts.bed
+done
+
