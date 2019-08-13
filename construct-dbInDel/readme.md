@@ -12,19 +12,28 @@ Clone ``` git clone https://github.com/moli-lab/dbIndel.git ```
 cd construct-dbInDel
 
 for virtualenv user:
+
 1 ```virtualenv dbindel```
+
 2 ```source dbindel/bin/activate```
+
 3 ```pip install -r requirements.txt```
 
 
-
 for pipenv user:
+
 1 ```pipenv shell```
+
 2 ```pipenv install -r requirements.txt```
+
 then,
+
 1 ```python3 manage.py makemigrations dbIndel```
+
 2 ```python3 manage.py migrate```
+
 3 ```python3 manage.py runserver```
+
 
 
 
